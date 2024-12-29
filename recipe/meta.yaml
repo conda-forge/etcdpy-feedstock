@@ -5,30 +5,33 @@ package:
   version: {{ version }}
 
 source:
-  url: https://pypi.io/packages/source/e/etcdpy/etcdpy-{{ version }}.tar.gz
+  url: https://pypi.org/packages/source/e/etcdpy/etcdpy-{{ version }}.tar.gz
   sha256: a3e46e2b117547839c6d2c1ece3b6d3c1a66dc2cfb64f1dac41b1599b54af3ea
 
 build:
+  number: 1
   noarch: python
-  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
-  number: 0
+  script:
+    - {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation --disable-pip-version-check
 
 requirements:
   host:
-    - python >=3.6
     - pip
+    - python {{ python_min }}
+    - setuptools
   run:
-    - python >=3.6
     - grpcio >=1.51.1
     - protobuf >=4.21.12
+    - python >={{ python_min }}
 
 test:
+  requires:
+    - pip
+    - python {{ python_min }}
   imports:
     - etcd3
   commands:
     - pip check
-  requires:
-    - pip
 
 about:
   home: https://github.com/candango/etcdpy
